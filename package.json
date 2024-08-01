@@ -1,12 +1,12 @@
 {
   "name": "anmeldung_termin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This script will find and book an Anmeldung appointment automatically for you in Berlin",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "solidneo",
+  "author": "ebwolf",
   "license": "MIT",
   "dependencies": {
     "puppeteer": "^15.0.0"

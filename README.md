@@ -1,6 +1,15 @@
 # anmeldung_berlin
 This script will find and book an Anmeldung appointment automatically for you in Berlin
-Feel free to contribute and further improve it
+
+This kind of script suffers from two fundamental problems:
+1. The service (anmeldung termin via the Burgeramt site) has to be treated as a black box.
+There is no "test mode" offered to make sure this will work.  
+2. No maintenance. The authors (myself included) will typically work on it until success and then abandon the project completely. I am working on it in August 2024. I make no guarantees that it will ever work again. 
+
+Less Serious problems:
+1. The berlin.de site is all PHP code and not service. So this script has to navigate and interpret HTML rather than call a well-defined API.
+2. This script is written in NodeJS, which, in itself isn't a problem but the Puppeteer library for NodeJS relies on "await" statements that don't always play nicely with the page throttling that the berlin.de site does. So, if you see a "Timeout" error, wait a few minutes and retry the script.
+
 
 # Installing
 1. Move to the target folder `cd /YOURFOLDER`
