@@ -46,8 +46,10 @@ async function bookTermin() {
         defaultViewport: null,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
   	});
+
     const page = await browser.newPage();
     await page.setRequestInterception(true);
+    
     page.on('request', (req) => {
         if(req.resourceType() === 'image' || req.resourceType() === 'stylesheet' || req.resourceType() === 'font'){
             req.abort();
@@ -58,10 +60,15 @@ async function bookTermin() {
 
     console.log("Checking for termins at "  + staticConfig.entryUrl);
 
+    let minTimestamp = Math.floor(Date.parse(config.minDate)/ 1000)
+    let maxTimestamp = Math.floor(Date.parse(config.maxDate)/ 1000);
+    console.log("Min: " + config.minDate + ' = ' + minTimestamp)
+    console.log("Max: " + config.maxDate + ' = ' + maxTimestamp)
+
     let success = false;
 
     while (success == false) {
-        try{           
+        try {           
             await page.goto(staticConfig.entryUrl);
 
             await page.waitForSelector('div.span7.column-content', { timeout: 120000 });
@@ -74,40 +81,50 @@ async function bookTermin() {
             if(available < 1) {
                 console.log("Waiting for " + config.delay / 1000 + " seconds")
                 await delay(config.delay); // Wait for delay milliseconds
-
                 continue;
             }
             
             let dates = await page.$$('td.buchbar');
 
-            for(let i=0;i<available;i++){
+            for (let i=0;i<available;i++) { 
                 // Parse the URL to get the date of the available appts
                 let link = await dates[i].$eval('a', el => el.getAttribute('href'));
-                console.log('Link ' + i + ': ' + link);
+                //console.log('Link ' + i + ': ' + link);
 
                 // Checking if Termins are within desirable range
                 let regex = /\d+/g;
                 let matches = link.match(regex);
 
                 let terminTime = Number(matches[0])
-                console.log("Termin time: " + terminTime)
+                console.log("#" + i + " time: " + terminTime);
 
+                // If this Termin is before desired range
+                if (terminTime <  minTimestamp) {
+                    var founddate = new Date(Number(matches[0]) * 1000);
+                    console.log("<<<Too early: " + founddate);
+                } else if (terminTime > maxTimestamp) {
+                    var founddate = new Date(Number(matches[0]) * 1000);
+                    console.log(">>>Too late: " + founddate);
+                } else {                    
+                    var founddate = new Date(Number(matches[0]) * 1000)
+                    console.log("===In range: " + founddate);
+                    
+                    // Ring the bell
+                    console.log('\u0007');
 
-                let minTimestamp = Math.floor(Date.parse(config.minDate)/ 1000)
-                let maxTimestamp = Math.floor(Date.parse(config.maxDate)/ 1000);
-                console.log("Min: " + config.minDate + ' = ' + minTimestamp)
-                console.log("Max: " + config.maxDate + ' = ' + maxTimestamp)
+                    // Link isn't right
+                    console.log(" To book, Use link: " + link);
+
+                    // Log when we found it
+                    var curdate = new Date();
+                    console.log("Found at " + curdate);
+                }
 
                 
-                // If this Termin is within the desired range - book it!
-                if (terminTime >  minTimestamp && terminTime <  maxTimestamp) {
-                    
+                /* The Booking code, the Bürgeramt changed the process a lot, so this doesn't work.
+                   The new proess would involve automating email (Bürgeramt sends a verification code
+                   to your email address which has to be entered).
 
-                    console.log("Found appointment in date range: " + matches[0])
-
-                    console.log(" Use link: " + link)
-
-                /*
                     await page.click('a[href*="' + link + '"]');
                     
                     console.log('Booking step 1');
@@ -148,18 +165,19 @@ async function bookTermin() {
                     if(config.takeScreenshot)
                         await page.screenshot({ path: config.screenshotFile2, fullPage: true });
 
-                    */
+                    
                     // Got the Termin, let's end this thing!
                     success = true;
   
                     break;
-                }
+                    */
+                
                 
                 if (!success) {
                     console.log("Waiting for " + config.delay / 1000 + " seconds")
                     await delay(config.delay); // Wait for miliseconds
                 }
-            }
+            } // for (...)
         } catch (err) {
             console.log(err);
             break;
