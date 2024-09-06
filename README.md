@@ -1,5 +1,5 @@
 # anmeldung_berlin
-This script will find and book an Anmeldung appointment automatically for you in Berlin
+This script will find and book an Anmeldung appointment automatically for you in Berlin. I have the appointment finder working but the autmatic booking will require work. The current method of requiring an emailed code to confirm the appointment might make this impossible.
 
 This kind of script suffers from two fundamental problems:
 1. The service (anmeldung termin via the Burgeramt site) has to be treated as a black box.

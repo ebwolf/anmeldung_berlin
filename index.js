@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const config = {
     'debug': false,
     'minDate': '2024-09-03T08:00:00', // earliest appointment
-    'maxDate': '2024-09-06T17:00:00', // lastest appointment
+    'maxDate': '2024-09-06T23:59:59', // lastest appointment
     'name': 'Erica Wolf',
     'email': 'ebwolf@gmail.com',
     'phone': '',// ADD PHONE NUMBER HERE (OPTIONAL)
@@ -107,13 +107,20 @@ async function bookTermin() {
                     console.log(">>>Too late: " + founddate);
                 } else {                    
                     var founddate = new Date(Number(matches[0]) * 1000)
-                    console.log("===In range: " + founddate);
+                    console.log("\n\n===In range: " + founddate);
                     
                     // Ring the bell
                     console.log('\u0007');
 
+                    // Ring the bell
+                    console.log('\u0007');
+                    
+                    // Ring the bell
+                    console.log('\u0007');
+
+                    // https://allaboutberlin.com/out/appointment-anmeldung
                     // Link isn't right
-                    console.log(" To book, Use link: " + link);
+                    console.log("\n\nTo book, Use link: " + link);
 
                     // Log when we found it
                     var curdate = new Date();
